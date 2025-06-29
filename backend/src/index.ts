@@ -8,6 +8,8 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+import jwtPassportStrategy from "./config/passportStrategy"
+app.use(jwtPassportStrategy.initialize())
 
 
 app.get("/", (req: Request, res: Response) => {
@@ -15,7 +17,9 @@ app.get("/", (req: Request, res: Response) => {
   res.send("My First TypeScript Project")
 });
 
-app.listen(PORT, () => {
+import routes from "./routes/index"
+app.use("/api/v1", routes);
 
+app.listen(PORT, () => {
   console.log("http://localhost:", PORT);
 });

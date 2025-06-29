@@ -1,4 +1,3 @@
-import { MongoOIDCError } from "mongodb";
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IUser extends Document {
