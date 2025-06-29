@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as JWTSTRATEGY, ExtractJwt, StrategyOptions } from "passport-jwt"
+import { Strategy as JWTStrategy, ExtractJwt, StrategyOptions } from "passport-jwt"
 import User from "../model/userSchema.model";
 
 const opts: StrategyOptions = {
@@ -7,7 +7,7 @@ const opts: StrategyOptions = {
     secretOrKey: process.env.JWT_SECRET_KEY as string
 }
 
-passport.use(new JWTSTRATEGY(opts, async (jwt_payload, done) => {
+passport.use(new JWTStrategy(opts, async (jwt_payload, done) => {
     try {
         const user = await User.findById(jwt_payload._id).select("passport")
         if (user) return done(null, user)
