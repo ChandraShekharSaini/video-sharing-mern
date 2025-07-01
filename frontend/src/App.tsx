@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
+
+import Routes from "./routes/rouer";
 
 const App = () => {
   return (
-    <div className='text-'>App</div>
+    <div>
+      <Routes />
+    </div>
+  );
+};
 
-
-  )
-}
-
-export default App
+export default App;
