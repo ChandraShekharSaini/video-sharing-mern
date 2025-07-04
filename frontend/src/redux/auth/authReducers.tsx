@@ -4,6 +4,8 @@ import type { RootState } from "../store";
 import backendApi from "../../api/backendApi";
 import { Toaster, toast } from "sonner";
 import axios from "axios";
+import { FaS } from "react-icons/fa6";
+import type { GiReturnArrow } from "react-icons/gi";
 
 interface User {
   _id: string;
@@ -24,6 +26,11 @@ export interface SignUpPayload {
   password: string;
 }
 
+export interface SignInPayload {
+  email: string;
+  password: string;
+}
+
 interface AuthResponse {
   success: boolean;
   message: string;
@@ -39,6 +46,20 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(signInUser.pending, (state) => {
+        state.loading = true;
+      })
+
+      .addCase(signInUser.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+
+      .addCase(signInUser.rejected, (state) => {
+        state.loading = false;
+      });
+  },
 });
 
 export const signUpUser = createAsyncThunk<
@@ -66,6 +87,44 @@ export const signUpUser = createAsyncThunk<
       toast.warning(error.response?.data?.message ?? error.message);
     } else {
       toast.warning("Something went wrong");
+    }
+  }
+});
+
+export const signInUser = createAsyncThunk<
+  string | null,
+  SignInPayload,
+  { rejectValue: string }
+>("/api/v1/auth/sign-in-user", async (payload, thunkApi) => {
+  try {
+    const { data } = await backendApi.post<AuthResponse>(
+      "/api/v1/auth/sign-in",
+      payload
+    );
+
+    if (data.success && data.user?.token) {
+      console.log(data);
+      if (data.user.token) {
+        toast.success(data.message);
+        localStorage.setItem("token", data.user.token);
+      }
+
+      return data.user.token || null;
+    } else {
+      console.log(data);
+      toast.warning(data.message);
+      return thunkApi.rejectWithValue(data.message);
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error);
+      toast.warning(error.response?.data?.message ?? error.message);
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message ?? error.message
+      );
+    } else {
+      toast.warning("Something Went Wrong");
+      return thunkApi.rejectWithValue("Something Went Wrong");
     }
   }
 });

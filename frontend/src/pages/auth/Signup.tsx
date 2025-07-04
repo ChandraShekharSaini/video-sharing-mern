@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useActionState } from "react";
 import Layout from "../../components/Layout";
 import type { AuthFormData } from "../../type";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import { signUpUser } from "../../redux/auth/authReducers";
-import { toast, Toaster } from "sonner";
+
 const Signup = () => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -17,8 +16,10 @@ const Signup = () => {
   const [isloading, setIsloading] = useState<boolean>(false);
 
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = ev.target;
 
+    console.log("------onChange-------------");
+    const { name, value } = ev.target;
+    console.log(`${name} : ${value}`);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -29,7 +30,6 @@ const Signup = () => {
     ev.preventDefault();
 
     setIsloading(true);
-
     dispatch(signUpUser(formData));
     setIsloading(false);
   };
@@ -39,7 +39,7 @@ const Signup = () => {
   return (
     <Layout>
       <div className="flex items-center justify-center p-4 w-full">
-        <Toaster richColors closeButton />
+  
         <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
           <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
             Join us Today

@@ -1,8 +1,39 @@
-import React from "react";
+import React, { useState, type ChangeEvent } from "react";
 import Layout from "../../components/Layout";
 import { Link } from "react-router-dom";
+import type { AuthFormData } from "../../type";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "../../redux/store";
+import { signInUser } from "../../redux/auth/authReducers";
 
-const Signup = () => {
+const Signin = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [isloading, setIsloading] = useState<boolean>(false);
+  const [formData, setFormData] = useState<AuthFormData>({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = ev.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  console.log(formData);
+
+  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>): void => {
+    ev.preventDefault();
+    console.log(formData);
+    setIsloading(true);
+    dispatch(signInUser(formData));
+    setIsloading(false);
+  };
+
   return (
     <Layout>
       <div className="flex items-center justify-center p-4 w-full">
@@ -11,12 +42,13 @@ const Signup = () => {
             Join us Today
           </h1>
 
-          <form className="space-y-7">
+          <form onSubmit={handleSubmit} className="space-y-7">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Email
               </label>
               <input
+                onChange={handleChange}
                 type="email"
                 name="email"
                 required
@@ -30,6 +62,7 @@ const Signup = () => {
                 Password
               </label>
               <input
+                onChange={handleChange}
                 type="password"
                 name="password"
                 required
@@ -58,4 +91,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Signin;

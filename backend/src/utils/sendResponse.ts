@@ -4,9 +4,9 @@ interface ResponseObject {
     [key: string]: unknown
 }
 
-const sendResponse = (res: Response, status: number, success: boolean, message: string, data: ResponseObject = {}) => {
+const sendResponse = (res: Response, status: number, success: boolean, message: string, user: ResponseObject = {}) => {
 
-    res.status(status).json({ success, message, data })
+    res.status(status).json({ success, message, user })
 
 }
 

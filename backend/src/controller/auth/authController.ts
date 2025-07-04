@@ -15,7 +15,6 @@ interface RegisterReq extends Request {
 }
 
 
-
 export const singnUpHandler: RequestHandler = async (req: RegisterReq, res: Response) => {
     console.log("-----------------sign-up-start-----------------");
     try {
@@ -46,9 +45,12 @@ export const signInHandler: RequestHandler = async (req: RegisterReq, res: Respo
 
     const { email, password } = req.body
 
+    console.log("data", email, password);
+
     try {
         const existedUser = await User.findOne({ email })
 
+        console.log(existedUser);
 
         if (!existedUser) {
             return sendResponse(res, 409, false, "Account Not Present")
@@ -56,17 +58,14 @@ export const signInHandler: RequestHandler = async (req: RegisterReq, res: Respo
 
         const result = await compareHashedPassword(password, existedUser.password)
 
-
-
         if (!result) {
             return sendResponse(res, 400, false, "Wrong Credentials")
         }
 
         const jwtToken = generateJwtToken(existedUser)
 
-
-
-        return sendResponse(res, 200, true, "User Logged Successfully", { user: jwtToken })
+        console.log(jwtToken);
+        return sendResponse(res, 200, true, "User Logged Successfully", { token: jwtToken })
 
 
     } catch (error) {
